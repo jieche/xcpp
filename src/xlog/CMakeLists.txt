@@ -51,6 +51,7 @@ endif()
 set(CONF_TYPES Debug Release  RelWithDebInfo MinSizeRel)
 list(APPEND CONF_TYPES "")
 foreach(type IN LISTS CONF_TYPES)
+  set(conf "")  #设置尾值为空
   if(type)
       string(TOUPPER _${type} conf)
       message("conf = ${conf}")
@@ -68,3 +69,5 @@ endforeach()
 set_target_properties(${PROJECT_NAME} PROPERTIES
     DEBUG_POSTFIX "d"
 )
+
+
