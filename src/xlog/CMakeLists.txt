@@ -40,3 +40,31 @@ endif()
 #静态库 动态库 不同宏变量
 # XLOG_STATIC   XLOG_EXPORTS
 target_compile_definitions( ${PROJECT_NAME} PUBLIC XLOG_STATIC) 
+
+
+#默认为Debug
+if(cmake_build_type STREQUAL "") 
+   set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+#配置输出路径 Debug  Release版本 输出路径一致
+set(CONF_TYPES Debug Release  RelWithDebInfo MinSizeRel)
+list(APPEND CONF_TYPES "")
+foreach(type IN LISTS CONF_TYPES)
+  if(type)
+      string(TOUPPER _${type} conf)
+      message("conf = ${conf}")
+   endif()
+
+   set_target_properties(${PROJECT_NAME} PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY${conf} ${CMAKE_CURRENT_LIST_DIR}/../../bin # dll exe 执行程序
+      LIBRARY_OUTPUT_DIRECTORY${conf} ${CMAKE_CURRENT_LIST_DIR}/../../lib #  .so .dylib
+      ARCHIVE_OUTPUT_DIRECTORY${conf} ${CMAKE_CURRENT_LIST_DIR}/../../lib # .lib .a
+      PDB_OUTPUT_DIRECTORY${conf} ${CMAKE_CURRENT_LIST_DIR}/../../bin # pdb 
+   )
+endforeach()
+
+#设置debug 添加d后缀
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    DEBUG_POSTFIX "d"
+)
