@@ -2,6 +2,7 @@
 #define XCONFIG_H
 //直接修改xconfig.h无效，需要修改xconfig.h.in
 #define _END_NAMESPACE_ }
+//cmake 定义宏
 #cmakedefine _XCPP_NAMESPACE_ @_XCPP_NAMESPACE_@
 
 #ifndef _WIN32
