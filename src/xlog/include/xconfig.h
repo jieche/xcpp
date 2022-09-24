@@ -3,7 +3,7 @@
 //直接修改xconfig.h无效，需要修改xconfig.h.in
 #define _END_NAMESPACE_ }
 //cmake 定义宏
-#define _XCPP_NAMESPACE_ namespace xlog {
+#define _XCPP_NAMESPACE_ namespace xcpp {
 
 #ifndef _WIN32
 	#define XCPP_API 
