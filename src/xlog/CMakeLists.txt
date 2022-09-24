@@ -20,6 +20,13 @@ if(XLOG_SHARED)
    set(TYPE SHARED)
 endif()
 
+# #静态库 动态库 不同宏变量 ---对象没生成 不能放在这
+# # XLOG_STATIC   XLOG_EXPORTS
+# if(XLOG_SHARED)
+#    target_compile_definitions( ${PROJECT_NAME} PUBLIC XLOG_EXPORTS) 
+# else()
+#    target_compile_definitions( ${PROJECT_NAME} PUBLIC XLOG_STATIC) 
+# endif()
 
 
 #CMAKE_CURRENT_LIST_DIR 当前CMakelists.txt 文件所在路径
@@ -32,6 +39,14 @@ FILE(GLOB H_FILE_I ${CMAKE_CURRENT_LIST_DIR}/include/*.h)
 
 
 add_library(${PROJECT_NAME} ${TYPE}  ${SRC} ${H_FILE} ${H_FILE_I})
+
+#静态库 动态库 不同宏变量
+# XLOG_STATIC   XLOG_EXPORTS
+if(XLOG_SHARED)
+   target_compile_definitions( ${PROJECT_NAME} PUBLIC XLOG_EXPORTS) 
+else()
+   target_compile_definitions( ${PROJECT_NAME} PUBLIC XLOG_STATIC) 
+endif()
 
 
 #设置头文件查找路径
@@ -54,9 +69,7 @@ if(msvc)
   )
 endif()
 
-#静态库 动态库 不同宏变量
-# XLOG_STATIC   XLOG_EXPORTS
-target_compile_definitions( ${PROJECT_NAME} PUBLIC XLOG_STATIC) 
+
 
 
 #默认为Debug
