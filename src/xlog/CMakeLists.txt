@@ -6,6 +6,23 @@ cmake_minimum_required(VERSION 3.22)
 
 project(xlog)
 
+#生成c++代码  传递命名空间
+# cmakedefine X_XCPP_NAMESPACE_ @_XCPP_NAMESPACE_@
+
+set(_XCPP_NAMESPACE_ "namespace xlog {")
+configure_file(xconfig.h.in ${CMAKE_CURRENT_LIST_DIR}/include/xconfig.h)
+
+
+#用户指定是动态库 静态库
+option(XLOG_SHARED "OFF is static" ON)
+set(TYPE_STATIC)
+if(XLOG_SHARED)
+   set(TYPE SHARED)
+endif()
+
+
+
+#CMAKE_CURRENT_LIST_DIR 当前CMakelists.txt 文件所在路径
 aux_source_directory(${CMAKE_CURRENT_LIST_DIR} SRC)
 
 
@@ -14,11 +31,11 @@ FILE(GLOB H_FILE ${CMAKE_CURRENT_LIST_DIR}/*.h)
 FILE(GLOB H_FILE_I ${CMAKE_CURRENT_LIST_DIR}/include/*.h) 
 
 
-add_library(${PROJECT_NAME} ${SRC} ${H_FILE} ${H_FILE_I})
+add_library(${PROJECT_NAME} ${TYPE}  ${SRC} ${H_FILE} ${H_FILE_I})
 
 
 #设置头文件查找路径
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_LIST_DIR}/include/
    ${CMAKE_CURRENT_LIST_DIR}
 )
@@ -70,4 +87,38 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     DEBUG_POSTFIX "d"
 )
 
+#设置安装头文件
+set_target_properties(${PROJECT_NAME} PROPERTIES
+PUBLIC_HEADER "${H_FILE_I}"
+)
+
+#安装库
+set(version 1.0)
+#cmake --install build --prefix=out
+install(TARGETS ${PROJECT_NAME}
+      EXPORT ${PROJECT_NAME}
+      RUNTIME DESTINATION bin
+      LIBRARY DESTINATION lib
+      PUBLIC_HEADER DESTINATION include
+)
+
+#支持 find_package
+
+
+#配置文件 config
+instaLl(EXPORT ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake
+    DESTINATION lib/config/${PROJECT_NAME}-${version}
+)
+
+#版本文件
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+${CMAKE_CURRENT_LIST_DIR}/../../lib/conf/${PROJECT_NAME}-${version}/${PROJECT_NAME}ConfigVersion.cmake
+VERSION ${version}
+COMPATIBILITY SameMajorVersion  # 版本兼容问题
+)
+
+install(FILES ${CMAKE_CURRENT_LIST_DIR}/../../lib/conf/${PROJECT_NAME}-${version}/${PROJECT_NAME}ConfigVersion.cmake
+    DESTINATION lib/config/${PROJECT_NAME}-${version}
+)
 

@@ -17,3 +17,9 @@ cmake --build build
 
 
 
+编译Release 库
+
+``` 
+cmake --build build  --config Release
+```
+
